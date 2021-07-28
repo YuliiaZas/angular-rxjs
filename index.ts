@@ -16,22 +16,25 @@ const convertValueToRoundedNumber = (value: string): number => {
   return +(+value).toFixed(2);
 };
 
-const addOnChange$ = (input: HTMLInputElement) =>
-  fromEvent(input, 'change').pipe(
+const addOnChange$ = (input: HTMLInputElement) => {
+  if (input === loanLengthInput) {
+    return fromEvent(input, 'change').pipe(
+      map(getValueFromInput),
+      map(convertValueToRoundedNumber),
+      startWith(input.value),
+      map(convertValueToRoundedNumber)
+    );
+  }
+  return fromEvent(input, 'change').pipe(
     map(getValueFromInput),
     map(convertValueToRoundedNumber)
   );
-
-const loanLengthInput$ = fromEvent(loanLengthInput, 'change').pipe(
-  map(getValueFromInput),
-  map(convertValueToRoundedNumber),
-  startWith(convertValueToRoundedNumber(loanLengthInput.value))
-);
+};
 
 combineLatest([
   addOnChange$(loanInterestInput),
   addOnChange$(loanAmountInput),
-  loanLengthInput$
+  addOnChange$(loanLengthInput)
 ])
   .pipe(
     map(([loanInterest, loanAmount, loanLength]) => {
