@@ -13,10 +13,10 @@ const resultBox = document.querySelector('#result');
 const getValueFromInput = (ev: Event) => (ev.target as HTMLInputElement).value;
 
 const convertValueToRoundedNumber = (value: string): number => {
-  return +(+value).toFixed(2);
+  return Number((Number(value)).toFixed(2));
 };
 
-const addOnChange$ = (input: HTMLInputElement) => {
+const getValueOnChange$ = (input: HTMLInputElement) => {
   if (input === loanLengthInput) {
     return fromEvent(input, 'change').pipe(
       map(getValueFromInput),
@@ -32,9 +32,9 @@ const addOnChange$ = (input: HTMLInputElement) => {
 };
 
 combineLatest([
-  addOnChange$(loanInterestInput),
-  addOnChange$(loanAmountInput),
-  addOnChange$(loanLengthInput)
+  getValueOnChange$(loanInterestInput),
+  getValueOnChange$(loanAmountInput),
+  getValueOnChange$(loanLengthInput)
 ])
   .pipe(
     map(([loanInterest, loanAmount, loanLength]) => {
